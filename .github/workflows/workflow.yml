@@ -19,7 +19,7 @@ jobs:
         id: tagging
         run: |
           docker build -t ${{ secrets.DOCKER_UNAME }}/app-server-2:${GITHUB_SHA::7} .
-          echo "IMAGE_TAG=${{ GITHUB_SHA::7 }}" >> $GITHUB_OUTPUT
+          echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
       - name: Test newly created build image
         run: docker run --rm -d --name back-cnt -p 5000:5000 ${{ secrets.DOCKER_UNAME }}/app-server-2:${GITHUB_SHA::7}
