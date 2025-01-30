@@ -45,6 +45,9 @@ jobs:
           #token: ${{ secrets.GIT_TOKEN }}
           ref: main
 
+      - name: Install docker compose
+        run: sudo apt install docker-compose -y
+
       - name: Docker-compose down and up
         run: |
           export BACK_TAG=${{ env.IMAGE_TAG }}
