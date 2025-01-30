@@ -46,7 +46,7 @@ jobs:
           ref: main
 
       - name: Install docker compose
-        run: sudo apt install docker-compose -y
+        run: apt install docker-compose -y
 
       - name: Docker-compose down and up
         run: |
