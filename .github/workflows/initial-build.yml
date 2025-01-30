@@ -27,4 +27,4 @@ jobs:
       port: 5000
     secrets:  
       docker-uname: ${{ secrets.DOCKER_UNAME }}
-      docker-token: ${{ secrets DOCKER_TOKEN}}
+      docker-token: ${{ secrets.DOCKER_TOKEN}}
