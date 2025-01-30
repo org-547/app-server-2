@@ -53,6 +53,7 @@ jobs:
       - name: Docker-compose down and up
         run: |
           export BACK_TAG=${{ env.IMAGE_TAG }}
+          echo "Backend tag is: $BACK_TAG"
           docker compose down 
           docker compose up -d
     
