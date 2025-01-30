@@ -41,8 +41,8 @@ jobs:
       - name: Check out other repo from same organization
         uses: actions/checkout@v3
         with:
-          repository: first-org/for-compose
-          token: ${{ secrets.GIT_TOKEN }}
+          repository: org-547/for-compose
+          #token: ${{ secrets.GIT_TOKEN }}
           ref: main
 
       - name: Docker-compose down and up
