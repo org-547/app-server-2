@@ -1,23 +1,8 @@
-name: For initial build of docker image
+name: Initial build of docker image
 
 on: workflow_dispatch
 
-
 jobs:
-
-  Image_build-push-0:
-    runs-on: ubuntu-latest
-
-    #outputs:
-      #image-tag: ${{ steps.tagging.outputs.IMAGE_TAG }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Debug Docker Username.
-        run: echo "Docker username is '${{ secrets.DOCKER_UNAME }}'"
-  
   Image-build-push:
     uses: org-547/reusable/.github/workflows/img-build-push.yml@main
     with:
