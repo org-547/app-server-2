@@ -6,29 +6,11 @@ on:
 
 jobs:
   Image-build-push:
-    runs-on: ubuntu-latest
-
-    outputs:
-      image-tag: ${{ steps.tagging.outputs.IMAGE_TAG }}
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Build and tag of docker image
-        id: tagging
-        run: |
-          docker build -t ${{ secrets.DOCKER_UNAME }}/app-server-2:${GITHUB_SHA::7} .
-          echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
-
-      - name: Test newly created build image
-        run: docker run --rm -d --name back-cnt -p 5000:5000 ${{ secrets.DOCKER_UNAME }}/app-server-2:${GITHUB_SHA::7}
-
-      - name: Push image to DockerHub
-        if  : success()
-        run : |
-          docker login -u ${{ secrets.DOCKER_UNAME }} -p ${{ secrets.DOCKER_TOKEN }}
-          docker push ${{ secrets.DOCKER_UNAME }}/app-server-2:${GITHUB_SHA::7}
+    uses: org-547/reusable/.github/workflows/img-build-push.yml@main
+    with:
+      app-component: app-server-2
+      container: back-cnt
+      port: 5000
 
   Change-image-tag-and-deploy:
     needs: [Image-build-push]
