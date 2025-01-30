@@ -25,5 +25,6 @@ jobs:
       app-component: app-server-2
       container: back-cnt
       port: 5000
+    secrets:  
       docker-uname: ${{ secrets.DOCKER_UNAME }}
       docker-token: ${{ secrets DOCKER_TOKEN}}
