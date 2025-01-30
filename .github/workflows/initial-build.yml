@@ -1,0 +1,13 @@
+name: For initial build of docker image
+
+on: workflow_dispatch
+
+
+jobs:
+  Image-build-push:
+    uses: org-547/reusable/.github/workflows/img-build-push.yml@main
+    with:
+      initial: yes
+      app-component: app-server-2
+      container: back-cnt
+      port: 5000
