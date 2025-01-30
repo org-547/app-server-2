@@ -18,7 +18,6 @@ jobs:
       - name: Build and tag of docker image
         id: tagging
         run: |
-          docker build -t ${{ secrets.DOCKER_UNAME }}/app-server-2:first
           docker build -t ${{ secrets.DOCKER_UNAME }}/app-server-2:${GITHUB_SHA::7} .
           echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_OUTPUT
 
