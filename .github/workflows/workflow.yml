@@ -46,7 +46,9 @@ jobs:
           ref: main
 
       - name: Install docker compose
-        run: printf '${{ secrets.SRV_PASSWORD }}\n' | sudo apt install docker-compose -y
+        run: |
+          echo "artbi ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/artbi
+          sudo apt install docker-compose -y
 
       - name: Docker-compose down and up
         run: |
