@@ -58,7 +58,7 @@ jobs:
 
       - name: Docker-compose down and up
         run: |
-          if [ ${{ steps.get-tag.outputs.tag }}  == '$FRONT_TAG' ]; then
+          if [ ${{ steps.get-tag.outputs.tag }}  == ${FRONT_TAG} ]; then
             export FRONT_TAG=first
           fi  
           export BACK_TAG=${GITHUB_SHA::7}
