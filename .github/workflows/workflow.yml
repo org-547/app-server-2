@@ -19,10 +19,6 @@ jobs:
     needs: [Image-build-push]
     runs-on: self-hosted
 
-    strategy:
-      matrix:
-        container: [back-cnt, front-cnt]
-
     outputs:
       tag: ${{ steps.get-tag.outputs.tag }}
 
@@ -60,7 +56,7 @@ jobs:
             echo "Container with name 'back-cnt' already exists!"
             docker stop back-cnt || true
             docker rm back-cnt || true
-            docker run --rm -d --name back-cnt --network host ${{ secrets.DOCKER_UNAME }}/app-server:${GITHUB_SHA::7}${{ needs.Image-build-push.outputs.image-tag }}
+            docker run --rm -d --name back-cnt --network host ${{ secrets.DOCKER_UNAME }}/app-server:${{ needs.Image-build-push.outputs.image-tag }}
           fi 
 
       - name: Docker-compose down and up
