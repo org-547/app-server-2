@@ -41,7 +41,7 @@ jobs:
           export BACK_TAG=${{ env.IMAGE_TAG }}
           echo "Frontend tag is: $FRONT_TAG"
           echo "Backend tag is: $BACK_TAG"
-          docker compose down 
-          docker compose up -d
+          docker-compose down 
+          docker-compose up -d
     
     
