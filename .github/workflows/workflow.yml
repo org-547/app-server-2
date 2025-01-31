@@ -29,13 +29,14 @@ jobs:
 
       - name: Install docker compose
         run: |
-          echo "artbi ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/artbi
+          echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/$USER
           sudo apt install docker-compose -y
 
       - name: Docker-compose down and up
         run: |
           export FRONT_TAG=latest
           export BACK_TAG=${{ env.IMAGE_TAG }}
+          echo "Frontend tag is: $FRONT_TAG"
           echo "Backend tag is: $BACK_TAG"
           docker compose down 
           docker compose up -d
