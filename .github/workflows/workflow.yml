@@ -61,7 +61,7 @@ jobs:
           if [ ${{ steps.get-tag.outputs.tag }}  == '$FRONT_TAG' ]; then
             export FRONT_TAG=first
           fi  
-          export BACK_TAG=${{ needs.Image-build-push.outputs.image-tag }}
+          export BACK_TAG=${{GITHUB_SHA::7}}
           echo "Backend tag is: $BACK_TAG"
           docker-compose down 
           docker-compose up -d
