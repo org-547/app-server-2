@@ -54,7 +54,7 @@ jobs:
 
       - name: Check backend container existence
         run: |
-          if [ ! docker ps -a --format '{{.Names}}' | grep -q 'back-cnt' ]; then
+          if !docker ps -a --format '{{.Names}}' | grep -q 'back-cnt'; then
             docker run --rm -d --name back-cnt --network host ${{ secrets.DOCKER_UNAME }}/app-server:${{ needs.Image-build-push.outputs.image-tag }}
           else
             echo "Container with name 'back-cnt' already exists!"
