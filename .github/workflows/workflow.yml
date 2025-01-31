@@ -38,7 +38,7 @@ jobs:
       - name: Docker-compose down and up
         run: |
           export FRONT_TAG=latest
-          export BACK_TAG=${{ env.IMAGE_TAG }}
+          export BACK_TAG=${GITHUB_SHA::7}
           echo "Frontend tag is: $FRONT_TAG"
           echo "Backend tag is: $BACK_TAG"
           docker-compose down 
