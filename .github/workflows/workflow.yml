@@ -26,13 +26,13 @@ jobs:
           repository: org-547/for-compose
           ref: main
 
-      - name: Install docker compose
-        run: |
+      #- name: Install docker compose
+        #run: |
           #echo "$USER ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/$USER
           #printf 'student\n' | sudo apt install docker-compose -y
-          echo "student" | sudo -S apt update
-          docker-compose --version
-          echo "Hello from me"
+          #echo "student" | sudo -S apt update
+          #docker-compose --version
+          #echo "Hello from me"
 
       - name: mesage
         run: echo "some message"
