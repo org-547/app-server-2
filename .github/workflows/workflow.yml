@@ -50,14 +50,10 @@ jobs:
 
       - name: Check backend container existence
         run: |
-          if ! docker ps -a --format '{{.Names}}' | grep -q 'back-cnt'; then
-            docker run --rm -d --name back-cnt --network host ${{ secrets.DOCKER_UNAME }}/app-server:${{needs.Image-build-push.outputs.image-tag}}
-          else
+          if docker ps -a --format '{{.Names}}' | grep -q 'back-cnt'; then
             echo "Container with name 'back-cnt' already exists!"
             docker stop back-cnt || true
             docker rm back-cnt || true
-            echo it is: ${{needs.Image-build-push.outputs.image-tag}}
-            docker run --rm -d --name back-cnt --network host ${{ secrets.DOCKER_UNAME }}/app-server:${{ needs.Image-build-push.outputs.image-tag }}
           fi 
 
       - name: Docker-compose down and up
