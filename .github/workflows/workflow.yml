@@ -19,8 +19,12 @@ jobs:
     needs: [Image-build-push]
     runs-on: self-hosted
 
+    strategy:
+      matrix:
+        container: [back-cnt, front-cnt]
+
     outputs:
-      image-tag: ${{ steps.tagging.outputs.image-tag }}
+      tag: ${{ steps.get-tag.outputs.tag }}
 
     steps:
       - name: Check out other repo from same organization
@@ -41,16 +45,30 @@ jobs:
         run: echo "some message"
 
       - name: Extract current frontend image-tag
+        id: get-tag
         run: |
           echo "another message"
           CURRENT_FRONT_TAG=$(grep -oP '(?<=image: terezabisharyan/app-client-2:)\${FRONT_TAG}' docker-compose.yml)
+          echo "tag=$CURRENT_FRONT_TAG" >> $GITHUB_OUTPUT
           echo "Current frontend image-tag is: $CURRENT_FRONT_TAG" 
+
+      - name: Check backend container existence
+        run: |
+          if [ ! docker ps -a --format '{{.Names}}' | grep -q 'back-cnt' ]; then
+            docker run --rm -d --name back-cnt --network host ${{ secrets.DOCKER_UNAME }}/app-server:${{ needs.Image-build-push.outputs.image-tag }}
+          else
+            echo "Container with name 'back-cnt' already exists!"
+            docker stop back-cnt || true
+            docker rm back-cnt || true
+            docker run --rm -d --name back-cnt --network host ${{ secrets.DOCKER_UNAME }}/app-server:${GITHUB_SHA::7}${{ needs.Image-build-push.outputs.image-tag }}
+          fi 
 
       - name: Docker-compose down and up
         run: |
-          export FRONT_TAG=first
-          export BACK_TAG=${GITHUB_SHA::7}
-          echo "Frontend tag is: $FRONT_TAG"
+          if [ ${{ steps.get-tag.outputs.tag }}  == '$FRONT_TAG' ]; then
+            export FRONT_TAG=first
+          fi  
+          export BACK_TAG=${{ needs.Image-build-push.outputs.image-tag }}
           echo "Backend tag is: $BACK_TAG"
           docker-compose down 
           docker-compose up -d
