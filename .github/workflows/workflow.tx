@@ -1,0 +1,51 @@
+name: Backend workflow..
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  Image-build-push:
+    uses: org-547/reusable/.github/workflows/img-build-push.yml@main
+    with:
+      app-component: app-server-2
+      container: back-cnt
+      port: 5000
+    secrets:  
+      docker-uname: ${{ secrets.DOCKER_UNAME }}
+      docker-token: ${{ secrets.DOCKER_TOKEN}}
+
+  Change-image-tag-and-deploy:
+    needs: [Image-build-push]
+    runs-on: self-hosted
+
+    outputs:
+      awk-out: ${{ steps.get-line.outputs.awk-out }}
+
+    steps:
+      - name: Change backend image-tag
+        run: sed -E -i'' "s/(.*app-server-2:).*/\1${GITHUB_SHA::7}/" 'docker-compose.yml'
+
+      - name: Checking containers existence
+        run: |
+          for cnt in back-cnt front-cnt pg-cnt
+          do
+            if docker ps -a --format '{{.Names}}' | grep -q "$cnt"; then
+              echo "Container with name $cnt already exists!"
+              docker stop "$cnt" || true
+              docker rm "$cnt" || true
+            fi
+          done    
+      
+      - name: Execute awk command for extract necessary line 
+        id: get-line
+        run: echo "awk-out=$(awk '/undefined-front-tag$/')" >> $GITHUB_OUTPUT
+
+      - name: Checking line content
+        run: |
+          line=${{ steps.get-line.outputs.awk-out }}
+          if [[ $line != *"undefined-front-tag"* ]]; then
+            docker-compose down
+            docker-compose up -d
+          fi  
+      
