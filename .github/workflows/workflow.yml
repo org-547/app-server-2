@@ -23,8 +23,8 @@ jobs:
       awk-out: ${{ steps.get-line.outputs.awk-out }}
 
     steps:
-      #- name: Checkout repository
-        #uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Change backend image-tag
         run: sed -E -i'' "s/(.*app-server-2:).*/\1${GITHUB_SHA::7}/" 'docker-compose.yml'
