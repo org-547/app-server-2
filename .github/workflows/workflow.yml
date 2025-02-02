@@ -47,7 +47,7 @@ jobs:
 
       - name: Check line content
         run: |
-          line=${{ steps.get-line.outputs.awk-out }}
+          #line=${{ steps.get-line.outputs.awk-out }}
           sub-content='undefined-front-tag'
           echo "$line"
           if [[ "Hello world" == *"world"* ]]; then
