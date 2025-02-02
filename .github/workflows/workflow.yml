@@ -24,7 +24,10 @@ jobs:
 
     steps:
       - name: Change backend image-tag
-        run: sed -E -i'' "s/(.*app-server-2:).*/\1${GITHUB_SHA::7}/" 'docker-compose.yml'
+        run: |
+          pwd
+          ls -lt
+          sed -E -i'' "s/(.*app-server-2:).*/\1${GITHUB_SHA::7}/" 'docker-compose.yml'
 
       - name: Checking containers existence
         run: |
