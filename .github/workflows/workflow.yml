@@ -23,6 +23,9 @@ jobs:
       awk-out: ${{ steps.get-line.outputs.awk-out }}
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        
       - name: Change backend image-tag
         run: |
           pwd
