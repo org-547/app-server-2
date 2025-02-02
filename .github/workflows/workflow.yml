@@ -1,4 +1,4 @@
-name: Backend workflow.
+name: Backend workflow
 
 on:
   push:
@@ -23,13 +23,14 @@ jobs:
       awk-out: ${{ steps.get-line.outputs.awk-out }}
 
     steps:
+    
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Change backend image-tag
         run: sed -E -i'' "s/(.*app-server-2:).*/\1${GITHUB_SHA::7}/" 'docker-compose.yml'
 
-      - name: Checking containers existence
+      - name: Check containers existence
         run: |
           for cnt in back-cnt front-cnt pg-cnt
           do
@@ -42,11 +43,12 @@ jobs:
       
       - name: Execute awk command for extract necessary line 
         id: get-line
-        run: echo "awk-out=$(awk '/undefined-front-tag$/')" >> $GITHUB_OUTPUT
+        run: echo "awk-out=$(awk '/undefined-front-tag$/' docker-compose.yml)" >> $GITHUB_OUTPUT
 
-      - name: Checking line content
+      - name: Check line content
         run: |
           line=${{ steps.get-line.outputs.awk-out }}
+          echo "$line"
           if [[ $line != *"undefined-front-tag"* ]]; then
             docker-compose down
             docker-compose up -d
