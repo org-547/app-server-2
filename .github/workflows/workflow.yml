@@ -48,9 +48,9 @@ jobs:
       - name: Check line content
         run: |
           #line=${{ steps.get-line.outputs.awk-out }}
-          sub-content='undefined-front-tag'
-          echo "$line"
-          if [[ "Hello world" == *"world"* ]]; then
+          #sub-content='undefined-front-tag'
+          #echo "$line"
+          if [[ "${{ steps.get-line.outputs.awk-out }}" == *"undefined"* ]]; then
             echo "Frontend image-tag is not been determined yet!"
           else  
             docker-compose down
