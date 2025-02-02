@@ -14,7 +14,7 @@ services:
       - POSTGRES_PASSWORD=some-password
 
   app-backend:
-    image: terezabisharyan/app-server-2:9e51eee
+    image: terezabisharyan/app-server-2:cbcf528
     restart: always
     network_mode: host  
     container_name: back-cnt
