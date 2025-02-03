@@ -19,6 +19,10 @@ jobs:
     needs: [Image-build-push]
     runs-on: self-hosted
 
+    defaults:
+      run:
+        working-directory: ${{ env.path }}
+
     outputs:
       awk-out: ${{ steps.get-line.outputs.awk-out }}
 
@@ -29,12 +33,50 @@ jobs:
           pwd
           ls -lt
           cat docker-compose.yml
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'Tereza'
+          git config --global user.email 'an3146073@gmail.com'
+
+      - name: Setup SSH
+        uses: MrSquaare/ssh-setup-action@v1
+        with:
+          host: github.com
+          private-key: ${{ secrets.SSH_PRIV_KEY }}
+          private-key-name: github
+
+      #- name: Get ls output
+        #id: ls
+        #run: echo "ls-out=$(ls -lt)" >> $GITHUB_OUTPUT
+
+      - name: Check and clone 
+        run: |
+          
+          if grep -q "app-server-2" <<< $(ls -lt); then
+            echo "Repository with name app-server-2 already exists!"
+            rm -rf app-server-2
+          fi
+            git clone git@github.com:org-547/app-server-2.git
+
+      - name: Change backend image-tag
+        working-directory: app-server-2
+        run: sed -E -i'' "s/(.*app-server-2:).*/\1${GITHUB_SHA::7}/" 'docker-compose.yml'
+
+      - name: Commit and Push Changes
+        working-directory: app-server-2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+        run: |
+          git add docker-compose.yml
+          git commit -m "[skip actions]"
+          git push origin main
     
       #- name: Checkout repository
         #uses: actions/checkout@v3
 
-      - name: Change backend image-tag
-        run: sed -E -i'' "s/(.*app-server-2:).*/\1${GITHUB_SHA::7}/" 'docker-compose.yml'
+      #- name: Change backend image-tag
+        #run: sed -E -i'' "s/(.*app-server-2:).*/\1${GITHUB_SHA::7}/" 'docker-compose.yml'
 
       - name: Check containers existence
         run: |
