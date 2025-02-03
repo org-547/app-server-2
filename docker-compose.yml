@@ -26,7 +26,7 @@ services:
       - PGPORT=5432
 
   app-frontend:
-    image: terezabisharyan/app-client-2:09ab32a
+    image: terezabisharyan/app-client-2:cc26389
     restart: always  
     network_mode: host  
     container_name: front-cnt
