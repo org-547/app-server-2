@@ -80,9 +80,11 @@ jobs:
       
       - name: Execute awk command for extract necessary line 
         id: get-line
+        working-directory: app-server-2
         run: echo "awk-out=$(awk '/undefined-front-tag$/' docker-compose.yml)" >> $GITHUB_OUTPUT
 
       - name: Check line content
+        working-directory: app-server-2
         run: |
           if [[ "${{ steps.get-line.outputs.awk-out }}" == *"undefined"* ]]; then
             echo "Frontend image-tag is not been determined yet!"
