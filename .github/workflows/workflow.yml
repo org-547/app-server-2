@@ -79,7 +79,7 @@ jobs:
           if [[ "${{ steps.get-line.outputs.awk-out }}" == *"undefined"* ]]; then
             echo "Frontend image-tag is not been determined yet!"
           else  
-            docker compose down
-            docker compose up -d
+            docker-compose down
+            docker-compose up -d
           fi  
     
