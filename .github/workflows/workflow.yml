@@ -76,6 +76,7 @@ jobs:
       - name: Check line content and up compose
         working-directory: app-server-2
         run: |
+          echo ${{ steps.get-line.outputs.awk-out }}
           if [[ "${{ steps.get-line.outputs.awk-out }}" == *"undefined"* ]]; then
             echo "Frontend image-tag is not been determined yet!"
           else  
