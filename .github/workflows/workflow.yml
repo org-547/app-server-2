@@ -24,38 +24,31 @@ jobs:
 
     steps:
 
-      - name: Debug
-        run: |
-          pwd
-          ls -lt
-          cat docker-compose.yml
-
-      - name: Set up Git
+      - name: Git Setup
         run: |
           git config --global user.name 'Tereza'
           git config --global user.email 'an3146073@gmail.com'
 
-      - name: Setup SSH
+      - name: SSH Setup
         uses: MrSquaare/ssh-setup-action@v1
         with:
           host: github.com
           private-key: ${{ secrets.SSH_PRIV_KEY }}
           private-key-name: github
 
-      - name: Check and clone 
+      - name: Check and clone backend repository
         run: |
-          
           if grep -q "app-server-2" <<< $(ls -lt); then
             echo "Repository with name app-server-2 already exists!"
             rm -rf app-server-2
           fi
             git clone git@github.com:org-547/app-server-2.git
 
-      - name: Change backend image-tag
+      - name: Change backend image-tag in compose file
         working-directory: app-server-2
         run: sed -E -i'' "s/(.*app-server-2:).*/\1${GITHUB_SHA::7}/" 'docker-compose.yml'
 
-      - name: Commit and Push Changes
+      - name: Commit and push changes without trigger
         working-directory: app-server-2
         env:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
@@ -63,9 +56,6 @@ jobs:
           git add docker-compose.yml
           git commit -m "[skip actions]"
           git push origin main
-    
-      #- name: Checkout repository
-        #uses: actions/checkout@v3
         
       - name: Check containers existence
         run: |
@@ -78,12 +68,12 @@ jobs:
             fi
           done    
       
-      - name: Execute awk command for extract necessary line 
+      - name: Execute awk command for extract necessary line
         id: get-line
         working-directory: app-server-2
         run: echo "awk-out=$(awk '/undefined-front-tag$/' docker-compose.yml)" >> $GITHUB_OUTPUT
 
-      - name: Check line content
+      - name: Check line content and up compose
         working-directory: app-server-2
         run: |
           if [[ "${{ steps.get-line.outputs.awk-out }}" == *"undefined"* ]]; then
@@ -92,4 +82,4 @@ jobs:
             docker compose down
             docker compose up -d
           fi  
-      
+    
