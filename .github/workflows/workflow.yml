@@ -23,6 +23,12 @@ jobs:
       awk-out: ${{ steps.get-line.outputs.awk-out }}
 
     steps:
+
+      - name: Debug
+        run: |
+          pwd
+          ls -lt
+          cat docker-compose.yml
     
       - name: Checkout repository
         uses: actions/checkout@v3
