@@ -42,10 +42,6 @@ jobs:
           private-key: ${{ secrets.SSH_PRIV_KEY }}
           private-key-name: github
 
-      #- name: Get ls output
-        #id: ls
-        #run: echo "ls-out=$(ls -lt)" >> $GITHUB_OUTPUT
-
       - name: Check and clone 
         run: |
           
@@ -70,10 +66,7 @@ jobs:
     
       #- name: Checkout repository
         #uses: actions/checkout@v3
-
-      #- name: Change backend image-tag
-        #run: sed -E -i'' "s/(.*app-server-2:).*/\1${GITHUB_SHA::7}/" 'docker-compose.yml'
-
+        
       - name: Check containers existence
         run: |
           for cnt in back-cnt front-cnt pg-cnt
