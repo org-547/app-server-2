@@ -4,17 +4,32 @@ on:
   push:
     branches: ["main"]
 
+#jobs:
+  #Image-build-push:
+    #uses: org-547/reusable/.github/workflows/img-build-push.yml@main
+    #with:
+      #app-component: app-server-2
+      #container: back-cnt
+      #port: 5000
+    #secrets:  
+      #docker-uname: ${{ secrets.DOCKER_UNAME }}
+      #docker-token: ${{ secrets.DOCKER_TOKEN}}
+
 jobs:
   Image-build-push:
-    uses: org-547/reusable/.github/workflows/img-build-push.yml@main
-    with:
-      app-component: app-server-2
-      container: back-cnt
-      port: 5000
-    secrets:  
-      docker-uname: ${{ secrets.DOCKER_UNAME }}
-      docker-token: ${{ secrets.DOCKER_TOKEN}}
+    name: Build and push backend image
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Use custom action
+        uses: org-547/app-2-actions@main
+        with:
+          app-component: app-server-2
+          container: back-cnt
+          port: 5000
+          docker-uname: ${{ secrets.DOCKER_UNAME }}
+          docker-token: ${{ secrets.DOCKER_TOKEN }}
+  
   Change-image-tag-and-deploy:
     needs: [Image-build-push]
     runs-on: self-hosted
