@@ -1,0 +1,86 @@
+name: Backend workflow
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  Image-build-push:
+    uses: org-547/reusable/.github/workflows/img-build-push.yml@main
+    with:
+      app-component: app-server-2
+      container: back-cnt
+      port: 5000
+    secrets:  
+      docker-uname: ${{ secrets.DOCKER_UNAME }}
+      docker-token: ${{ secrets.DOCKER_TOKEN}}
+
+  
+  Change-image-tag-and-deploy:
+    needs: [Image-build-push]
+    runs-on: self-hosted
+
+    outputs:
+      awk-out: ${{ steps.get-line.outputs.awk-out }}
+
+    steps:
+
+      - name: Git Setup
+        run: |
+          git config --global user.name 'Tereza'
+          git config --global user.email 'an3146073@gmail.com'
+
+      - name: SSH Setup
+        uses: MrSquaare/ssh-setup-action@v1
+        with:
+          host: github.com
+          private-key: ${{ secrets.SSH_PRIV_KEY }}
+          private-key-name: github
+
+      - name: Check and clone backend repository
+        run: |
+          if grep -q "app-server-2" <<< $(ls -lt); then
+            echo "Repository with name app-server-2 already exists!"
+            rm -rf app-server-2
+          fi
+            git clone git@github.com:org-547/app-server-2.git
+
+      - name: Change backend image-tag in compose file
+        working-directory: app-server-2
+        run: sed -E -i'' "s/(.*app-server-2:).*/\1${GITHUB_SHA::7}/" 'docker-compose.yml'
+
+      - name: Commit and push changes without trigger
+        working-directory: app-server-2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+        run: |
+          git add docker-compose.yml
+          git commit -m "[skip actions]"
+          git push origin main
+        
+      - name: Check containers existence
+        run: |
+          for cnt in back-cnt front-cnt pg-cnt
+          do
+            if docker ps -a --format '{{.Names}}' | grep -q "$cnt"; then
+              echo "Container with name $cnt already exists!"
+              docker stop "$cnt" || true
+              docker rm "$cnt" || true
+            fi
+          done    
+      
+      - name: Execute awk command for extract necessary line
+        id: get-line
+        working-directory: app-server-2
+        run: echo "awk-out=$(awk '/undefined-front-tag$/' docker-compose.yml)" >> $GITHUB_OUTPUT
+
+      - name: Check line content and up compose
+        working-directory: app-server-2
+        run: |
+          echo ${{ steps.get-line.outputs.awk-out }}
+          if [[ "${{ steps.get-line.outputs.awk-out }}" == *"undefined"* ]]; then
+            echo "Frontend image-tag is not been determined yet!"
+          else  
+            docker-compose down
+            docker-compose up -d
+          fi  
