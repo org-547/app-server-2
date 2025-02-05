@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Use custom action
+      - name: Use custom action for build/push of the image
         uses: org-547/app-2-actions/job-1@main
         with:
           app-component: app-server-2
@@ -25,7 +25,7 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Use another custom action
+      - name: Use custom action for update/deploy app-component
         uses: org-547/app-2-actions/job-2@main
         with:
           git-user: 'Tereza'
