@@ -24,6 +24,9 @@ jobs:
     needs: [Image-build-push]
     runs-on: self-hosted
 
+    defaults:
+      run:
+        working-directory: app-server-2
     steps:
       - name: Use custom action for update/deploy app-component
         uses: org-547/app-2-actions/job-2@main
