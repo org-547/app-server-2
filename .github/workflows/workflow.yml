@@ -1,4 +1,4 @@
-name: Backend workflow..
+name: Backend workflow
 
 on:
   push:
@@ -28,7 +28,6 @@ jobs:
       - name: Use custom action for update/deploy app-component
         uses: org-547/app-2-actions/job-2@main
         with:
-          #not-default-workdir: '/home/ubuntu/actions-runner/_work/app-server-2/app-server-2'
           git-user: 'Tereza'
           email: 'an3146073@gmail.com'
           ssh-priv-key: ${{ secrets.SSH_PRIV_KEY }}
