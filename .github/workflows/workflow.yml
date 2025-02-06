@@ -32,6 +32,7 @@ jobs:
           email: 'an3146073@gmail.com'
           ssh-priv-key: ${{ secrets.SSH_PRIV_KEY }}
           app-component: 'app-server-2'
+          execution-workdir: 'app-server-2'
           git-token: ${{ secrets.GIT_TOKEN }}
           second-component-tag: 'undefined-front-tag'
     
