@@ -14,7 +14,7 @@ services:
       - POSTGRES_PASSWORD=some-password
 
   app-backend:
-    image: terezabisharyan/app-server-2:7fe3151
+    image: terezabisharyan/app-server-2:undefined-back-tag
     restart: always
     network_mode: host  
     container_name: back-cnt
@@ -26,7 +26,7 @@ services:
       - PGPORT=5432
 
   app-frontend:
-    image: terezabisharyan/app-client-2:a9804db
+    image: terezabisharyan/app-client-2:undefined-front-tag
     restart: always  
     network_mode: host  
     container_name: front-cnt
