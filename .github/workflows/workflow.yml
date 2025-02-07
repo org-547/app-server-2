@@ -27,7 +27,7 @@ jobs:
     defaults:
       run:
         shell: bash
-        working-directory: ./app-server-2
+        working-directory: /home/ubuntu/actions-runner/_work/app-server-2/app-server-2/app-server-2
 
     steps:
       - name: Use custom action for update/deploy app-component
